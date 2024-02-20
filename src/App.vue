@@ -11,4 +11,6 @@ import MapView from './components/MapView.vue'
 </template>
 
 <style scoped>
+
+
 </style>

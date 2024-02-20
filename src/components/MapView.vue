@@ -53,9 +53,9 @@ export default {
 </template>
 
 <style scoped>
+
 .leaflet-container {
     z-index: 1;
-    height: 400px;
     width: 100%;
   }
 </style>
