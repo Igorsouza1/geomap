@@ -12,7 +12,7 @@
     </div>
     <div class="flex align-items-center gap-3 mb-5">
       <label for="arquivo" class="font-semibold w-6rem">Arquivo</label>
-      <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="onUpload" class="w-full md:w-14rem" />
+      <FileUpload id="arquivo" mode="basic" name="arquivo" accept=".kml,.kmz,.shp" :maxFileSize="1000000" @select="onUpload" class="w-full md:w-14rem" />
     </div>
     <div class="flex justify-content-end gap-2">
       <Button type="button" label="Cancel" class="p-button-secondary" @click="toggleVisible"></Button>
@@ -22,19 +22,20 @@
 </template>
 
   
-  <script>
-  import Dialog from 'primevue/dialog';
-  import Button from 'primevue/button';
-  import InputText from 'primevue/inputtext';
-  import Dropdown from 'primevue/dropdown';
-  import FileUpload from 'primevue/fileupload';
-  
-  export default {
+<script>
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+import FileUpload from 'primevue/fileupload';
+
+export default {
   components: { Dialog, Button, InputText, Dropdown, FileUpload },
   data() {
     return {
       visible: false,
       shape: { name: '', dataType: '', file: null },
+      arqType: [{ type: 'KML' }, { type: 'KMZ' }, { type: 'SHP' }],
       dataTypes: [
         { type: 'Shape', value: 'shape' },
         { type: 'Pontos', value: 'ponto' },
@@ -46,13 +47,42 @@
     toggleVisible() {
       this.visible = !this.visible;
     },
+    verifyFormInput() {
+      return this.verifyName() && this.verifyArq(); // Use 'this' para acessar métodos dentro do objeto
+    },
     submitForm() {
-      console.log('Formulário submetido:', this.shape);
-      this.toggleVisible(); // Fecha a modal após a submissão
+      if (this.verifyFormInput()) { // Use 'this' para chamar verifyFormInput
+        console.log('Formulário submetido:', this.shape);
+
+        this.shape.name = ''
+        this.toggleVisible(); // Fecha a modal após a submissão
+      } else {
+        console.log(this.shape.file)
+        console.log('Erro ao enviar formulário')
+      }
     },
     onUpload(event) {
-      console.log('Arquivo enviado:', event.files);
-      // Lógica de tratamento após o upload
+      if (event.files && event.files.length > 0) {
+        this.shape.file = event.files[0];
+        console.log('Arquivo carregado:', this.shape.file);
+      } else {
+        console.log('Nenhum arquivo foi carregado.');
+      }
+    },
+    verifyName() {
+      if (this.shape.name.trim() === '') { // 'this.shape' para acessar 'name'
+        alert('O campo Nome é obrigatório.');
+        return false;
+      }
+      return true;
+    },
+    verifyArq() {
+      const fileExtension = this.shape.file?.name.split('.').pop(); // 'this.shape' para acessar 'file'
+      if (!['kml', 'kmz', 'shp'].includes(fileExtension)) {
+        alert('Formato de arquivo inválido. Por favor, selecione um arquivo .kml, .kmz ou .shp.');
+        return false;
+      }
+      return true;
     }
   }
 };
