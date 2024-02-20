@@ -28,6 +28,8 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
+import axios from '../utils/axios';
+
 
 export default {
   components: { Dialog, Button, InputText, Dropdown, FileUpload },
@@ -50,16 +52,51 @@ export default {
     verifyFormInput() {
       return this.verifyName() && this.verifyArq(); // Use 'this' para acessar métodos dentro do objeto
     },
-    submitForm() {
-      if (this.verifyFormInput()) { // Use 'this' para chamar verifyFormInput
-        console.log('Formulário submetido:', this.shape);
 
-        this.shape.name = ''
-        this.toggleVisible(); // Fecha a modal após a submissão
-      } else {
-        console.log(this.shape.file)
-        console.log('Erro ao enviar formulário')
+    getCSRFToken () {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              let cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
       }
+      return cookieValue;
+    },
+    submitForm() {
+      
+      if (!this.verifyFormInput()) {
+        console.log('Erro ao enviar formulário');
+        return;
+      }
+      axios.defaults.headers.common['X-CSRFToken'] = this.getCSRFToken();
+      // Prepara os dados do formulário para envio
+      const formData = new FormData();
+      formData.append('nome', this.shape.name);
+      formData.append('tipo', this.shape.dataType.value); // Certifique-se de que isso reflete o que você espera receber no back-end
+      formData.append('arquivo', this.shape.file);
+
+      // Realiza a solicitação de POST para o servidor
+      axios.post('/upload/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(response => {
+        console.log('Resposta do servidor:', response.data);
+        this.shape.name = '';
+        this.shape.dataType = '';
+        this.shape.file = null;
+        this.toggleVisible(); // Fecha a modal após a submissão
+      })
+      .catch(error => {
+        console.error('Erro na solicitação:', error);
+        // Lida com o erro aqui, como mostrar uma mensagem para o usuário
+      });
     },
     onUpload(event) {
       if (event.files && event.files.length > 0) {
