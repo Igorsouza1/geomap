@@ -28,8 +28,8 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
-import axios from '../utils/axios';
-
+import { submitShape } from '../services/apiService'; // Ajuste o caminho conforme necessário
+import { verifyName, verifyArq } from '../utils/validationForm'; // Ajuste o caminho conforme necessário
 
 export default {
   components: { Dialog, Button, InputText, Dropdown, FileUpload },
@@ -37,7 +37,6 @@ export default {
     return {
       visible: false,
       shape: { name: '', dataType: '', file: null },
-      arqType: [{ type: 'KML' }, { type: 'KMZ' }, { type: 'SHP' }],
       dataTypes: [
         { type: 'Shape', value: 'shape' },
         { type: 'Pontos', value: 'ponto' },
@@ -49,81 +48,42 @@ export default {
     toggleVisible() {
       this.visible = !this.visible;
     },
-    verifyFormInput() {
-      return this.verifyName() && this.verifyArq(); // Use 'this' para acessar métodos dentro do objeto
-    },
-
-    getCSRFToken () {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-              let cookie = cookies[i].trim();
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
-    },
     submitForm() {
-      
-      if (!this.verifyFormInput()) {
+      if (!verifyName(this.shape.name) || !verifyArq(this.shape.file)) {
+        alert('Campo Nome e seleção de arquivos são obrigatórios')
         console.log('Erro ao enviar formulário');
         return;
       }
-      axios.defaults.headers.common['X-CSRFToken'] = this.getCSRFToken();
-      // Prepara os dados do formulário para envio
+
       const formData = new FormData();
       formData.append('nome', this.shape.name);
-      formData.append('tipo', this.shape.dataType.value); // Certifique-se de que isso reflete o que você espera receber no back-end
+      formData.append('tipo', this.shape.dataType.value);
       formData.append('arquivo', this.shape.file);
 
-      // Realiza a solicitação de POST para o servidor
-      axios.post('/upload/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then(response => {
-        console.log('Resposta do servidor:', response.data);
-        this.shape.name = '';
-        this.shape.dataType = '';
-        this.shape.file = null;
-        this.toggleVisible(); // Fecha a modal após a submissão
-      })
-      .catch(error => {
-        console.error('Erro na solicitação:', error);
-        // Lida com o erro aqui, como mostrar uma mensagem para o usuário
-      });
+      submitShape(formData)
+        .then(response => {
+          console.log('Resposta do servidor:', response.data);
+          this.resetForm();
+          this.toggleVisible();
+        })
+        .catch(error => {
+          console.error('Erro na solicitação:', error);
+        });
     },
     onUpload(event) {
       if (event.files && event.files.length > 0) {
         this.shape.file = event.files[0];
-        console.log('Arquivo carregado:', this.shape.file);
       } else {
         console.log('Nenhum arquivo foi carregado.');
       }
     },
-    verifyName() {
-      if (this.shape.name.trim() === '') { // 'this.shape' para acessar 'name'
-        alert('O campo Nome é obrigatório.');
-        return false;
-      }
-      return true;
+    resetForm() {
+      this.shape = { name: '', dataType: '', file: null };
     },
-    verifyArq() {
-      const fileExtension = this.shape.file?.name.split('.').pop(); // 'this.shape' para acessar 'file'
-      if (!['kml', 'kmz', 'shp'].includes(fileExtension)) {
-        alert('Formato de arquivo inválido. Por favor, selecione um arquivo .kml, .kmz ou .shp.');
-        return false;
-      }
-      return true;
-    }
   }
 };
 </script>
+
   
   <style scoped>
 
