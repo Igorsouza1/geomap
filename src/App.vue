@@ -1,6 +1,9 @@
 <script setup>
 import sidebarView from './components/SidebarView.vue';
 import MapView from './components/MapView.vue'
+
+
+
 </script>
 
 <template>

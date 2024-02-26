@@ -1,21 +1,30 @@
 <template>
   <div class="sidebar">
-    <div class="title">Shapes</div>
-    <div class="content">
-      <li>
-        content
-      </li>
+    <div class="init-content">
+      <div class="title">Shapes</div>
+      <div class="content">
+        <ul>
+          <!-- Note a mudança aqui para acessar mapas de mapasStore.mapas -->
+          <li class="list-itens" v-for="mapa in mapasStore.mapas" :key="mapa.id">
+            <input class="input-shapes" type="checkbox" :id="`checkbox-${mapa.id}`" :value="mapa.id" v-model="selectedMapas">
+            <label :for="`checkbox-${mapa.id}`">{{ mapa.nome }}</label>
+          </li>
+        </ul>
+      </div>
     </div>
     <AddShapeModal />
   </div>
 </template>
 
 <script setup>
-import { defineComponent } from 'vue'
+import { onMounted } from 'vue'
+import { useMapasStore } from '../stores/mapasStore.js' // Ajuste o caminho conforme necessário
 import AddShapeModal from './AddShapeModal.vue'
 
-defineComponent({
-  name: 'Sidebar'
+const mapasStore = useMapasStore()
+
+onMounted(() => {
+  mapasStore.loadMapas()
 })
 </script>
 
@@ -32,7 +41,7 @@ defineComponent({
   text-align: center;
   align-items: center;
   z-index: 10;
-  width: 120px;
+  width: 15%;
   height: 100vh;
   background-color: #333;
   color: #fff;
@@ -48,9 +57,6 @@ defineComponent({
   text-align: center;
 }
 
-.content {
-  padding: 10px 20px;
-}
 
 .sidebar a {
   color: #fff;
@@ -60,4 +66,23 @@ defineComponent({
 .sidebar a:hover {
   text-decoration: underline;
 }
+
+.list-itens{
+  padding: 5px 10px;
+  text-align: left;
+  font-weight: 300;
+  font-size: 0.9rem;
+}
+
+.sidebar ul {
+  list-style: none; /* Remove estilos padrão da lista */
+  padding: 0;
+}
+
+.input-shapes{
+  margin-right: 5px;
+}
+
+
+
 </style>

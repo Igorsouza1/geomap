@@ -30,6 +30,7 @@ import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
 import { submitShape } from '../services/apiService'; // Ajuste o caminho conforme necessário
 import { verifyName, verifyArq } from '../utils/validationForm'; // Ajuste o caminho conforme necessário
+import { useMapasStore } from '../stores/mapasStore';
 
 export default {
   components: { Dialog, Button, InputText, Dropdown, FileUpload },
@@ -38,8 +39,8 @@ export default {
       visible: false,
       shape: { name: '', dataType: '', file: null },
       dataTypes: [
-        { type: 'Shape', value: 'shape' },
-        { type: 'Pontos', value: 'ponto' },
+        { type: 'Shape', value: 'shp' },
+        { type: 'KML', value: 'kml' },
         { type: 'Links', value: 'link' }
       ]
     };
@@ -65,10 +66,13 @@ export default {
           console.log('Resposta do servidor:', response.data);
           this.resetForm();
           this.toggleVisible();
+          useMapasStore().loadMapas();
         })
         .catch(error => {
           console.error('Erro na solicitação:', error);
         });
+
+        
     },
     onUpload(event) {
       if (event.files && event.files.length > 0) {

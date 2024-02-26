@@ -26,3 +26,7 @@ export function submitShape(formData) {
     },
   });
 }
+
+export function fetchMapas() {
+  return axios.get('/mapas/');
+}
