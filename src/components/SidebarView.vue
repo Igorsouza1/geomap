@@ -43,7 +43,6 @@ onMounted(() => {
   flex-direction: column; 
   justify-content: space-between;
   text-align: center;
-  align-items: center;
   z-index: 10;
   width: 15%;
   height: 100vh;
@@ -61,16 +60,13 @@ onMounted(() => {
   text-align: center;
 }
 
-
-
-
-
 .content{
   width: 100%;
 }
 
 .list-container{
   width: 100%;
+  margin-left: 5px;
 }
 
 .list-itens{

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center w-full">
+  <div class="flex justify-content-center w-full">
     <Button label="+" @click="toggleVisible" class="m-2 w-8" />
   </div>
   <Dialog v-model:visible="visible" header="Adicionar Shape" :style="{ width: '25rem' }">
