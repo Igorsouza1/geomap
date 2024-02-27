@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref  } from 'vue'
+import { onMounted, ref, watch  } from 'vue'
 import { useMapasStore } from '../stores/mapasStore.js' 
 import AddShapeModal from './AddShapeModal.vue'
 import Checkbox from 'primevue/checkbox';
@@ -30,6 +30,11 @@ const selectedMapas = ref([]);
 onMounted(() => {
   mapasStore.loadMapas()
 })
+
+watch(selectedMapas, (newVal) => {
+  mapasStore.setSelectedMapas(newVal);
+});
+
 </script>
 
 <style scoped>
@@ -87,9 +92,5 @@ onMounted(() => {
 .input-shapes{
   margin-right: 5px;
 }
-
-
-
-
 
 </style>

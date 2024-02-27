@@ -14,6 +14,9 @@ export const useMapasStore = defineStore('mapas', {
       } catch (error) {
         console.error("Erro ao buscar mapas:", error);
       }
+    },
+    setSelectedMapas(selectedMapas) {
+      this.selectedMapas = selectedMapas;
     }
   }
 });
