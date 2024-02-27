@@ -14,7 +14,7 @@
     </div>
     <div class="flex align-items-center gap-3 mb-5">
       <label for="arquivo" class="font-semibold w-6rem">Arquivo</label>
-      <FileUpload id="arquivo" mode="basic" name="arquivo" accept=".kml,.kmz,.shp" :maxFileSize="1000000" @select="onUpload" class="w-full md:w-14rem" />
+      <FileUpload id="arquivo" mode="basic" name="arquivo" accept=".kml,.kmz,.shp" :maxFileSize="100000000000000" @select="onUpload" class="w-full md:w-14rem" />
     </div>
     <div class="flex justify-content-end gap-2">
       <Button type="button" label="Cancel" class="p-button-secondary" @click="toggleVisible"></Button>

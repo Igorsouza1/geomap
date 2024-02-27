@@ -41,8 +41,10 @@ const addLayerControl = () => {
   L.control.layers(baseLayers).addTo(map.value);
 };
 
+
+
 watch(() => mapasStore.selectedMapas, (newVal) => {
-  if (map.value) { // Certifique-se de que o mapa está definido
+  if (map.value) { 
     map.value.eachLayer((layer) => {
       if (layer instanceof L.GeoJSON) {
         map.value.removeLayer(layer);
@@ -52,7 +54,7 @@ watch(() => mapasStore.selectedMapas, (newVal) => {
     newVal.forEach((id) => {
       const shape = mapasStore.mapas.find(mapa => mapa.id === id);
       if (shape) {
-        L.geoJSON(JSON.parse(shape.dados_json)).addTo(map.value); // Uso correto de `map.value`
+        L.geoJSON(JSON.parse(shape.dados_json)).addTo(map.value); 
       }
     });
   }

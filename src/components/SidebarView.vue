@@ -49,7 +49,7 @@ watch(selectedMapas, (newVal) => {
   justify-content: space-between;
   text-align: center;
   z-index: 10;
-  width: 15%;
+  width: 18%;
   height: 100vh;
   background-color: #333;
   color: #fff;
@@ -75,7 +75,7 @@ watch(selectedMapas, (newVal) => {
 }
 
 .list-itens{
-  padding: 5px 10px;
+  padding: 5px 5px;
   text-align: left;
   font-weight: 300;
   font-size: 0.9rem;
@@ -90,7 +90,7 @@ watch(selectedMapas, (newVal) => {
 }
 
 .input-shapes{
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 </style>
