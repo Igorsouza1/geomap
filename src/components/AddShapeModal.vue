@@ -14,7 +14,7 @@
     </div>
     <div class="flex align-items-center gap-3 mb-5">
       <label for="arquivo" class="font-semibold w-6rem">Arquivo</label>
-      <FileUpload id="arquivo" mode="basic" name="arquivo" accept=".kml,.kmz,.shp" :maxFileSize="100000000000000" @select="onUpload" class="w-full md:w-14rem" />
+      <FileUpload id="arquivo" mode="basic" :multiple="true" name="arquivo" accept=".kml,.kmz,.shp,.cpg,.dbf,.prj,.qix,.xml" :maxFileSize="100000000000000" @select="onUpload" class="w-full md:w-14rem" />
     </div>
     <div class="flex justify-content-end gap-2">
       <Button type="button" label="Cancel" class="p-button-secondary" @click="toggleVisible"></Button>
@@ -48,6 +48,7 @@ const toggleVisible = () => {
 
 const submitForm = () => {
   if (!verifyName(shape.name) || !verifyArq(shape.file)) {
+    console.log(shape.file)
     alert('Campo Nome e seleção de arquivos são obrigatórios');
     console.log('Erro ao enviar formulário');
     return;
@@ -56,7 +57,9 @@ const submitForm = () => {
   const formData = new FormData();
   formData.append('nome', shape.name);
   formData.append('tipo', shape.dataType.value);
-  formData.append('arquivo', shape.file);
+  for (let i = 0; i < shape.file.length; i++) {
+    formData.append('arquivo', shape.file[i]);
+  }
 
   submitShape(formData)
     .then(response => {
@@ -74,7 +77,7 @@ const submitForm = () => {
 
 const onUpload = (event) => {
   if (event.files && event.files.length > 0) {
-    shape.file = event.files[0];
+    shape.file = event.files;
   } else {
     console.log('Nenhum arquivo foi carregado.');
   }
