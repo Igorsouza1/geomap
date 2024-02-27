@@ -3,10 +3,9 @@
     <div class="init-content">
       <div class="title">Shapes</div>
       <div class="content">
-        <ul>
-          <!-- Note a mudança aqui para acessar mapas de mapasStore.mapas -->
+        <ul class="list-container">
           <li class="list-itens" v-for="mapa in mapasStore.mapas" :key="mapa.id">
-            <input class="input-shapes" type="checkbox" :id="`checkbox-${mapa.id}`" :value="mapa.id" v-model="selectedMapas">
+            <Checkbox class="input-shapes" :value="mapa.id" v-model="selectedMapas"  :id="`checkbox-${mapa.id}`"></Checkbox>
             <label :for="`checkbox-${mapa.id}`">{{ mapa.nome }}</label>
           </li>
         </ul>
@@ -17,11 +16,16 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useMapasStore } from '../stores/mapasStore.js' // Ajuste o caminho conforme necessário
+import { onMounted, ref  } from 'vue'
+import { useMapasStore } from '../stores/mapasStore.js' 
 import AddShapeModal from './AddShapeModal.vue'
+import Checkbox from 'primevue/checkbox';
 
 const mapasStore = useMapasStore()
+const selectedMapas = ref([]);
+
+
+
 
 onMounted(() => {
   mapasStore.loadMapas()
@@ -35,9 +39,9 @@ onMounted(() => {
 }
 
 .sidebar {
-  display: flex; /* Adiciona flexbox */
-  flex-direction: column; /* Organiza os filhos em coluna */
-  justify-content: space-between; /* Separa o conteúdo e o AddShapeModal */
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between;
   text-align: center;
   align-items: center;
   z-index: 10;
@@ -58,13 +62,15 @@ onMounted(() => {
 }
 
 
-.sidebar a {
-  color: #fff;
-  text-decoration: none;
+
+
+
+.content{
+  width: 100%;
 }
 
-.sidebar a:hover {
-  text-decoration: underline;
+.list-container{
+  width: 100%;
 }
 
 .list-itens{
@@ -72,16 +78,21 @@ onMounted(() => {
   text-align: left;
   font-weight: 300;
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+
 }
 
 .sidebar ul {
-  list-style: none; /* Remove estilos padrão da lista */
+  list-style: none;
   padding: 0;
 }
 
 .input-shapes{
   margin-right: 5px;
 }
+
+
 
 
 
